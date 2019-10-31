@@ -1,0 +1,284 @@
+---
+title: "Prediction-modelling from wheat to bread"
+subtitle: "Prospective observational register studies of a nationwide Swedish cohort"
+author: "Erik Bulow"
+date: "2019-11-05"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs 
+    css: xaringan-themer.css
+    seal: false
+    yolo: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+
+library(xaringanthemer)
+mono_accent(
+  base_color          = "#af151e",
+  header_font_google  = google_font("Open Sans", "Extra-Bold"),
+  text_font_google    = google_font("Nunito Sans", "300", "300i"),
+  text_font_size      = "24px",
+  header_h1_font_size = "36px",
+  header_h2_font_size = "30px",
+  background_image    = "nhsr_files/figure-html/title_Sida_2.png",
+  background_position = "top left", 
+  padding             = "4em 3em 1em 3em",  
+  code_font_google    = google_font("Droid Mono"),
+  footnote_position_bottom = "1em",
+  footnote_font_size = "16px"
+)
+```
+
+background-image: url("nhsr_files/figure-html/title_Sida_1.png")
+background-size: contain
+
+???
+
+from start to finish
+
+---
+
+background-image: url("nhsr_files/figure-html/tha.jpg")
+background-position: bottom right
+background-size: auto
+
+# The optimists
+ 
+- Predict 90-day mortality after elective total hip arthroplasty
+--
+
+- Web calculator
+--
+
+- Publish in high impact journal
+--
+
+- Save the world!
+- Get the Nobel price!
+- Become immortable heroes!
+
+---
+
+# The pessimists
+
+- Observational data (no intervention)
+--
+
+- Imbalanced data (0.3 % dies)
+--
+
+- We already know why patients die!
+
+---
+
+
+background-image: url("nhsr_files/figure-html/snail.jpg")
+background-position: bottom right
+background-size: 50%
+
+# Reality
+
+- Ethical permission 2013
+  - Extended several times 2014-2017
+
+--
+- Data linkage using personal identitiy numbers 2016
+
+--
+- Massive data sets. Slow computing.
+
+---
+
+
+background-image: url("nhsr_files/figure-html/sql.png")
+background-position: right
+background-size: auto
+
+
+# Data management
+
+- SQLite/`dplyr`
+
+--
+- `data.table`!
+
+--
+- Regular expressions `^(I(099|1(10|3[02])|255|4(2[05-9]|3)|50)|P290)`
+
+--
+- `profvis`
+
+--
+- `furrr`
+
+--
+- MRO did not help in this case
+
+--
+- Slow local computer infra-structure!
+
+---
+
+background-image: url("nhsr_files/figure-html/coder.jpg")
+---
+
+# First modelling attempt
+
+- Data: 
+  - demography, socio-economics
+  - surgical, components, hospital
+  - comorbidities (Charlson/Elixhauser) 
+  - medical prescriptions (RxRisk V).
+
+--
+- Logistic regression (dead/alive after 90 days)
+  - Univariable screening
+  - Step-wise
+
+--
+- Results
+  - Bad sensitivity
+  - Good specificity and AUC
+  - Clinically reasonable model
+
+---
+
+background-image: url("nhsr_files/figure-html/stop.jpg")
+background-position: bottom right
+background-size: 33%
+
+# Stop!
+
+- External validation!
+
+--
+- Newer data!
+
+--
+- Statistician quit!
+
+---
+
+background-image: url("nhsr_files/figure-html/tidy.png")
+background-position: bottom right
+background-size: 50%
+
+
+# Second modelling attempt
+
+- New linkage data base (1999-2015)
+
+--
+- New ethical permissions
+
+--
+- New statistician (me)
+
+--
+- `ProjectTemplate`
+
+--
+- `tidymodels`
+
+--
+- Downsampling, Bagging and model averaging
+
+---
+
+background-image: url("nhsr_files/figure-html/stop.jpg")
+background-position: bottom right
+background-size: 33%
+
+# STOP!
+
+- Don't do down sampling!
+
+--
+- Don't use medical prescription data!
+
+--
+- Don't use all those ad hoc methods!
+
+---
+
+
+background-image: url("nhsr_files/figure-html/brlasso.png")
+background-position: bottom right
+background-size: 50%
+
+
+# Third modelling attempt
+
+- Bootstrap ranking with penalized regression (LASSO) and piecewice linear regression to find break points
+
+--
+- Adjust for optimism (overfitting)
+
+--
+- Calibration belt plots
+
+--
+- Transparent reporting
+
+--
+- Only for $\hat p < .03$ 
+
+---
+background-image: url("nhsr_files/figure-html/flowchart.png")
+background-size: contain
+background-position: right
+
+# Automated flowchart
+
+- `rlang` (quosures)
+- `DiagrammeR`
+
+---
+background-image: url("nhsr_files/figure-html/shiny.png")
+
+---
+background-image: url("nhsr_files/figure-html/zenodo.png")
+
+---
+background-image: url("nhsr_files/figure-html/binder.png")
+
+---
+
+# Manuscript
+
+- `bookdown`
+- Mendeley + `.bib`
+- Word template (line spacing, paginatoin, formatting)
+
+--
+- And of course ... manual editing through e-mails ...
+---
+
+
+# External validation
+
+- Adjustments
+  - Model as is
+  - re-calibration
+- Validation
+  - Discrimination: AUC
+  - Calibration belts 
+
+```{r}
+knitr::include_graphics("nhsr_files/figure-html/njr.jpg")
+```
+
+---
+
+background-image: url("nhsr_files/figure-html/title_Sida_3.png")
+background-size: contain
